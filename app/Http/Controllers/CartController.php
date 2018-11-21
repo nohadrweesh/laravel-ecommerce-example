@@ -41,6 +41,13 @@ class CartController extends Controller
     public function store(Request $request)
     {
         //
+        $duplicates=Cart::search(function ($cartItem, $rowId) use($request) {
+            return $cartItem->id === $request->id;
+        });
+        
+        if($duplicates->isNotEmpty()){
+            return redirect()->route('cart.index')->with('success_message','Item already exist!');
+        }
         Cart::add($request->id,$request->name,1,$request->price)->associate('App\Product');
         return redirect()->route('cart.index')->with('success_message','Item was added successfully');
     }
@@ -90,5 +97,14 @@ class CartController extends Controller
         //
         Cart::remove($id);
         return back()->with('success_message', 'Item has been removed!');
+    }
+    
+    public function switchToSaveForLater($id){
+        $item=Cart::get($id);
+        Cart::remove($id);
+        
+        Cart::instance('saveForLater')->add($id,$item->name,1,$item->price)->associate('App\Product');
+        //dd(Cart::instance('saveForLater')->content());
+        return redirect()->route('cart.index')->with('success_message','Item is saved for later');
     }
 }
