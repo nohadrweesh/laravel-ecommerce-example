@@ -8,7 +8,7 @@
             <li><a href="#">Blog</a></li>
             <li><a href="{{ route('shop.index') }}">Cart
             @if(Cart::count()>0)
-              <span class="cart-count"><span>{{Cart::count()}}</span></span>
+              <span class="cart-count"><span>{{Cart::instance('default')->count()}}</span></span>
               @endif
               
               
