@@ -11,45 +11,51 @@
 @section('content')
 
     <div class="container">
+        @if (session()->has('success_message'))
+            <div class="alert alert-success">
+                {{ session()->get('success_message') }}
+            </div>
+        @endif
 
         <h1 class="checkout-heading stylish-heading">Checkout</h1>
         <div class="checkout-section">
             <div>
-                <form action="#" id="payment-form">
+                <form action="{{route('checkout.store')}}" method="post" id="payment-form">
+                   {{csrf_field()}}
                     <h2>Billing Details</h2>
 
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" value="">
+                        <input type="email" class="form-control" id="email" name="email" value="{{old('email')}}" required>
                     </div>
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="">
+                        <input type="text" class="form-control" id="name" name="name" value="{{old('name')}}" required>
                     </div>
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <input type="text" class="form-control" id="address" name="address" value="">
+                        <input type="text" class="form-control" id="address" name="address" value="{{old('address')}}" required>
                     </div>
 
                     <div class="half-form">
                         <div class="form-group">
                             <label for="city">City</label>
-                            <input type="text" class="form-control" id="city" name="city" value="">
+                            <input type="text" class="form-control" id="city" name="city" value="{{old('city')}}" required>
                         </div>
                         <div class="form-group">
                             <label for="province">Province</label>
-                            <input type="text" class="form-control" id="province" name="province" value="">
+                            <input type="text" class="form-control" id="province" name="province" value="{{old('province')}}" required>
                         </div>
                     </div> <!-- end half-form -->
 
                     <div class="half-form">
                         <div class="form-group">
                             <label for="postalcode">Postal Code</label>
-                            <input type="text" class="form-control" id="postalcode" name="postalcode" value="">
+                            <input type="text" class="form-control" id="postalcode" name="postalcode" value="{{old('postalcode')}}" required>
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" value="">
+                            <input type="text" class="form-control" id="phone" name="phone" value="{{old('phone')}}" required>
                         </div>
                     </div> <!-- end half-form -->
 
@@ -59,7 +65,7 @@
 
                     <div class="form-group">
                         <label for="name_on_card">Name on Card</label>
-                        <input type="text" class="form-control" id="name_on_card" name="name_on_card" value="">
+                        <input type="text" class="form-control" id="name_on_card" name="name_on_card" value="{{old('name_on_card')}}" required>
                     </div>
                   <div class="form-group">
                         <label for="card-element">
@@ -75,7 +81,7 @@
 
                     <div class="spacer"></div>
 
-                    <button type="submit" class="button-primary full-width">Complete Order</button>
+                    <button type="submit" id="complete-order" class="button-primary full-width ">Complete Order</button>
 
 
                 </form>
@@ -187,6 +193,7 @@
             var form = document.getElementById('payment-form');
             form.addEventListener('submit', function(event) {
               event.preventDefault();
+              document.getElementById('complete-orde').disabled=true;
               var options={
                 name:document.getElementById('name_on_card').value,
                 address_line_1:document.getElementById('address').value,
