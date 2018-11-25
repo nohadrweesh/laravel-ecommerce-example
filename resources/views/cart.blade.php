@@ -17,6 +17,7 @@
     </div> <!-- end breadcrumbs -->
 
     <div class="cart-section container">
+        
         <div>
             @if (session()->has('success_message'))
                 <div class="alert alert-success">
@@ -79,14 +80,14 @@
 
             </div> <!-- end cart-table -->
 
-            <a href="#" class="have-code">Have a Code?</a>
+            <!-- <a href="#" class="have-code">Have a Code?</a>
 
             <div class="have-code-container">
                 <form action="#">
                     <input type="text">
                     <button type="submit" class="button button-plain">Apply</button>
                 </form>
-            </div> <!-- end have-code-container -->
+            </div> --> <!-- end have-code-container -->
 
             <div class="cart-totals">
                 <div class="cart-totals-left">

@@ -17,8 +17,14 @@ class CheckoutController extends Controller
      */
     public function index()
     {
-        //
-        return view('checkout');
+       
+        return view('checkout')->with([
+            'discount'=>$this->getNumbers()->get('discount'),
+            'newTotal'=>$this->getNumbers()->get('newTotal'),
+            'newSubtotal'=>$this->getNumbers()->get('newSubtotal'),
+            'newTax'=>$this->getNumbers()->get('newTax')
+
+        ]);
     }
 
     /**
@@ -46,18 +52,20 @@ class CheckoutController extends Controller
         })->values()->toJson();
         try{
             $charges=Stripe::charges()->create([
-                'amount'=>Cart::total()/100,
+                'amount'=>$this->getNumbers()->get('newTotal')/100,
                 'currency'=>'CAD',
                 'source'=>$request->stripeToken,
                 'description'=>'Order',
                 'receipt_email'=>$request->email,
                     'metadata'=>[
                         'contents'=>$contents,
-                        'quantity'=>Cart::instance('default')->count()
+                        'quantity'=>Cart::instance('default')->count(),
+                        'discount'=>collect(session()->get('coupon'))->toJson()
                     ]
                 
                 ]);
             Cart::instance('default')->destroy();
+            session()->forget('coupon');
             //return back()->with('success_message',"Thank you!Your payment has been successfully accepted");
             return redirect()->route("confirmation.index")->with('success_message',"Thank you!Your payment has been successfully accepted");
 
@@ -111,5 +119,20 @@ class CheckoutController extends Controller
     public function destroy($id)
     {
         //
+    }
+    private function getNumbers(){
+        $tax=Config('cart.tax')/100;
+        $discount=session()->get('coupon')['discount']??0;
+        $newSubtotal=Cart::subtotal()-$discount;
+        $newTax=$newSubtotal*$tax;
+        $newTotal=$newSubtotal+$newTax;
+
+        return collect([
+            'tax'=>$tax,
+            'discount'=>$discount,
+            'newSubtotal'=>$newSubtotal,
+            'newTax'=>$newTax,
+            'newTotal'=>$newTotal
+        ]);
     }
 }

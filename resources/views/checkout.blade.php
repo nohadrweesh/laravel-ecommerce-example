@@ -11,11 +11,22 @@
 @section('content')
 
     <div class="container">
+        <div class="spacer"></div>
         @if (session()->has('success_message'))
             <div class="alert alert-success">
                 {{ session()->get('success_message') }}
             </div>
         @endif
+
+         @if(count($errors) > 0)
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
         <h1 class="checkout-heading stylish-heading">Checkout</h1>
         <div class="checkout-section">
@@ -117,20 +128,49 @@
                 <div class="checkout-totals">
                     <div class="checkout-totals-left">
                         Subtotal <br>
-                       <!--  Discount (10OFF - 10%) <br> -->
-                        Tax <br>
+                        @if(session()->has('coupon'))
+                            Discount ({{session()->get('coupon')['name']}}) :
+                            <form action="{{route('coupon.destroy')}}" method="post" style="display: inline">
+                                {{csrf_field()}}
+                                {{method_field('DELETE')}}
+                                <button  style="background-color: white;" type="submit">Remove</button>
+
+                            </form>
+                            <br> 
+                            <hr>
+                            New Subtotal:<br>
+                        @endif
+                        Tax (13%): <br>
                         <span class="checkout-totals-total">Total</span>
 
                     </div>
 
                     <div class="checkout-totals-right">
                        {{presentPrice(Cart::subtotal())}}<br>
-                        <!-- -$750.00 <br> -->
-                       {{presentPrice(Cart::tax())}}<br>
-                        <span class="checkout-totals-total">{{presentPrice(Cart::total())}}</span>
+                       @if(session()->has('coupon'))
+                            -{{presentPrice($discount)}}<br> 
+                            <hr>
+                            {{presentPrice($newSubtotal)}}<br>
+                        @endif
+                       {{presentPrice($newTax)}}<br>
+                        <span class="checkout-totals-total">{{presentPrice($newTotal)}}</span>
 
                     </div>
                 </div> <!-- end checkout-totals -->
+                @if(! session()->has('coupon'))
+
+                <a href="#" class="have-code">Have a Code?</a>
+
+                <div class="have-code-container">
+                    <form action="{{route('coupon.store')}}" method="post">
+                        {{csrf_field()}}
+                        <input type="text" name="coupon_code" id="coupon_code">
+                        <button type="submit" class="button button-plain">Apply</button>
+                    </form>
+                </div> <!-- end have-code-container -->
+                @endif
+
+
 
             </div>
 
@@ -193,7 +233,7 @@
             var form = document.getElementById('payment-form');
             form.addEventListener('submit', function(event) {
               event.preventDefault();
-              document.getElementById('complete-orde').disabled=true;
+              document.getElementById('complete-order').disabled=true;
               var options={
                 name:document.getElementById('name_on_card').value,
                 address_line_1:document.getElementById('address').value,

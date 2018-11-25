@@ -13,7 +13,7 @@ class ProductsTableSeeder extends Seeder
     public function run()
     {
 
-        // Laptops
+      // Laptops
         for ($i = 1; $i <= 30; $i++) {
             Product::create([
                 'name' => 'Laptop ' . $i,
@@ -23,6 +23,7 @@ class ProductsTableSeeder extends Seeder
                 'description' => 'Lorem ' . $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
             ])->categories()->attach(1);
         }
+        // Make laptop have a category of "Desktop" as well.
         $product = Product::find(1);
         $product->categories()->attach(2);
         // Desktops
@@ -35,7 +36,6 @@ class ProductsTableSeeder extends Seeder
                 'description' => 'Lorem ' . $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
             ])->categories()->attach(2);
         }
-
         // Phones
         for ($i = 1; $i <= 9; $i++) {
             Product::create([
@@ -46,7 +46,6 @@ class ProductsTableSeeder extends Seeder
                 'description' => 'Lorem ' . $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
             ])->categories()->attach(3);
         }
-
         // Tablets
         for ($i = 1; $i <= 9; $i++) {
             Product::create([
@@ -57,7 +56,6 @@ class ProductsTableSeeder extends Seeder
                 'description' => 'Lorem ' . $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
             ])->categories()->attach(4);
         }
-
         // TVs
         for ($i = 1; $i <= 9; $i++) {
             Product::create([
@@ -68,7 +66,6 @@ class ProductsTableSeeder extends Seeder
                 'description' => 'Lorem ' . $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
             ])->categories()->attach(5);
         }
-
         // Cameras
         for ($i = 1; $i <= 9; $i++) {
             Product::create([
@@ -79,7 +76,7 @@ class ProductsTableSeeder extends Seeder
                 'description' => 'Lorem ' . $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
             ])->categories()->attach(6);
         }
-          // Appliances
+        // Appliances
         for ($i = 1; $i <= 9; $i++) {
             Product::create([
                 'name' => 'Appliance ' . $i,
@@ -89,5 +86,7 @@ class ProductsTableSeeder extends Seeder
                 'description' => 'Lorem ' . $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
             ])->categories()->attach(7);
         }
+        // Select random entries to be featured
+        Product::whereIn('id', [1, 12, 22, 31, 41, 43, 47, 51, 53, 61, 69, 73, 80])->update(['featured' => true]);
     }
 }
